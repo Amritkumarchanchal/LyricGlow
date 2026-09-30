@@ -1,0 +1,24 @@
+{
+  "name": "lyricglow",
+  "version": "0.1.0",
+  "description": "A floating lyrics overlay for macOS",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist:mac": "electron-builder --mac dmg"
+  },
+  "build": {
+    "appId": "com.lyricglow.desktop",
+    "productName": "LyricGlow",
+    "mac": {
+      "category": "public.app-category.music",
+      "target": [
+        "dmg"
+      ]
+    }
+  },
+  "devDependencies": {
+    "electron": "^44.5.1",
+    "electron-builder": "^26.0.0"
+  }
+}
