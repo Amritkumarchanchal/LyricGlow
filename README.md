@@ -65,6 +65,9 @@ whichever you ran `npm start` from) → quit and start it again.
 
 Your region and window choice are remembered between runs.
 
+Use **Open at login** in the overlay controls to add or remove LyricGlow from your macOS Login
+Items. Use the **×** control to quit the app.
+
 ## Troubleshooting
 
 - **"Spotify window not found"**: Spotify must be open and not minimized. Press ⌘⇧W and pick it

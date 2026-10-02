@@ -4,6 +4,9 @@ const ctx = canvas.getContext('2d');
 const msg = document.getElementById('msg');
 const selectBox = document.getElementById('selectBox');
 const listEl = document.getElementById('list');
+const openAtLogin = document.getElementById('openAtLogin');
+const loginSetting = document.getElementById('loginSetting');
+const closeButton = document.getElementById('closeButton');
 
 const LS_REGION = 'lm.region';
 const LS_WINDOW = 'lm.windowName';
@@ -203,6 +206,28 @@ window.lyricsMirror.onSelectRegion(beginSelect);
 window.lyricsMirror.onPickWindow(showPicker);
 window.lyricsMirror.onClickThrough((on) => {
   document.body.classList.toggle('clickthrough', on);
+});
+
+closeButton.addEventListener('click', () => window.lyricsMirror.quit());
+
+openAtLogin.addEventListener('change', async () => {
+  const previousValue = !openAtLogin.checked;
+  openAtLogin.disabled = true;
+  try {
+    openAtLogin.checked = await window.lyricsMirror.setOpenAtLogin(openAtLogin.checked);
+  } catch (error) {
+    openAtLogin.checked = previousValue;
+    setMsg('Could not update Open at login: ' + error.message);
+  } finally {
+    openAtLogin.disabled = false;
+  }
+});
+
+window.lyricsMirror.getOpenAtLogin().then(({ supported, enabled }) => {
+  loginSetting.hidden = !supported;
+  openAtLogin.checked = enabled;
+}).catch(() => {
+  loginSetting.hidden = true;
 });
 
 setMsg('Looking for Spotify…');

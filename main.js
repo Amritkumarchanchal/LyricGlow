@@ -1,8 +1,28 @@
-const { app, BrowserWindow, desktopCapturer, globalShortcut, ipcMain, screen, systemPreferences } = require('electron');
+const { app, BrowserWindow, desktopCapturer, globalShortcut, ipcMain, Menu, screen, systemPreferences } = require('electron');
 const path = require('path');
+
+app.setName('LyricGlow');
 
 let win = null;
 let clickThrough = false;
+
+function createApplicationMenu() {
+  Menu.setApplicationMenu(Menu.buildFromTemplate([
+    {
+      label: 'LyricGlow',
+      submenu: [
+        { label: 'Show LyricGlow', click: () => win?.show() },
+        { role: 'hide' },
+        { type: 'separator' },
+        { role: 'quit' },
+      ],
+    },
+    {
+      label: 'Window',
+      submenu: [{ role: 'minimize' }, { role: 'close' }],
+    },
+  ]));
+}
 
 function createWindow() {
   const { width } = screen.getPrimaryDisplay().workAreaSize;
@@ -17,7 +37,7 @@ function createWindow() {
     hasShadow: false,
     resizable: true,
     alwaysOnTop: true,
-    skipTaskbar: true,
+    skipTaskbar: false,
     focusable: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -43,6 +63,8 @@ function toggleClickThrough() {
 app.whenReady().then(async () => {
   // Triggers the macOS Screen Recording permission prompt if needed.
   if (process.platform === 'darwin') {
+    app.dock.show();
+    createApplicationMenu();
     const status = systemPreferences.getMediaAccessStatus('screen');
     console.log('Screen recording permission:', status);
   }
@@ -58,6 +80,11 @@ app.whenReady().then(async () => {
   globalShortcut.register('CommandOrControl+Shift+W', () => win.webContents.send('pick-window'));
 });
 
+app.on('activate', () => {
+  if (!win) createWindow();
+  else win.show();
+});
+
 ipcMain.handle('get-sources', async () => {
   const sources = await desktopCapturer.getSources({
     types: ['window'],
@@ -71,6 +98,17 @@ ipcMain.handle('get-sources', async () => {
 ipcMain.handle('screen-permission', () => {
   if (process.platform !== 'darwin') return 'granted';
   return systemPreferences.getMediaAccessStatus('screen');
+});
+
+ipcMain.handle('get-open-at-login', () => ({
+  supported: process.platform === 'darwin',
+  enabled: process.platform === 'darwin' && app.getLoginItemSettings().openAtLogin,
+}));
+
+ipcMain.handle('set-open-at-login', (_event, enabled) => {
+  if (process.platform !== 'darwin') return false;
+  app.setLoginItemSettings({ openAtLogin: Boolean(enabled) });
+  return app.getLoginItemSettings().openAtLogin;
 });
 
 ipcMain.on('quit', () => app.quit());
