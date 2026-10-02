@@ -100,17 +100,6 @@ ipcMain.handle('screen-permission', () => {
   return systemPreferences.getMediaAccessStatus('screen');
 });
 
-ipcMain.handle('get-open-at-login', () => ({
-  supported: process.platform === 'darwin',
-  enabled: process.platform === 'darwin' && app.getLoginItemSettings().openAtLogin,
-}));
-
-ipcMain.handle('set-open-at-login', (_event, enabled) => {
-  if (process.platform !== 'darwin') return false;
-  app.setLoginItemSettings({ openAtLogin: Boolean(enabled) });
-  return app.getLoginItemSettings().openAtLogin;
-});
-
 ipcMain.on('quit', () => app.quit());
 
 app.on('will-quit', () => globalShortcut.unregisterAll());

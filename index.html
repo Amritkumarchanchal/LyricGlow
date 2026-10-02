@@ -40,15 +40,6 @@
       pointer-events: none; }
     body.clickthrough #badge { display: block; }
 
-    #controls { position: absolute; top: 6px; right: 6px; z-index: 2; display: flex; align-items: center;
-      gap: 8px; padding: 4px 6px; border-radius: 6px; color: #eee; background: rgba(20,20,20,.82);
-      font-size: 11px; -webkit-app-region: no-drag; }
-    #loginSetting { display: flex; align-items: center; gap: 4px; cursor: pointer; }
-    #loginSetting[hidden] { display: none; }
-    #loginSetting input { margin: 0; accent-color: #1db954; }
-    #closeButton { width: 20px; height: 20px; padding: 0; border: 0; border-radius: 4px;
-      background: transparent; color: #eee; font-size: 17px; line-height: 20px; cursor: pointer; }
-    #closeButton:hover { background: #d94444; }
   </style>
 </head>
 <body>
@@ -60,10 +51,6 @@
     <div id="msg"></div>
     <div id="hint">Drag a box around the lyrics, then release</div>
     <div id="badge">click-through on (⌘⇧K)</div>
-    <div id="controls">
-      <label id="loginSetting" hidden><input id="openAtLogin" type="checkbox" /> Open at login</label>
-      <button id="closeButton" type="button" title="Close LyricGlow" aria-label="Close LyricGlow">×</button>
-    </div>
     <div id="picker"><h4>Pick the Spotify window</h4><div id="list"></div></div>
   </div>
   <script src="renderer.js"></script>
